@@ -10,7 +10,7 @@ export function makeBlankQuestion(
     name: string,
     type: QuestionType,
 ): Question {
-    return {
+    const newQ: Question = {
         id,
         name,
         type,
@@ -20,6 +20,8 @@ export function makeBlankQuestion(
         points: 1,
         published: false,
     };
+
+    return newQ;
 }
 
 /**
@@ -30,9 +32,13 @@ export function makeBlankQuestion(
  * HINT: Look up the `trim` and `toLowerCase` functions.
  */
 export function isCorrect(question: Question, answer: string): boolean {
-    return (
-        answer.trim().toLowerCase() === question.expected.trim().toLowerCase()
-    );
+    const trimmedA: string = answer.toLowerCase().trim();
+    const trimmedE: string = question.expected.toLowerCase().trim();
+    if (trimmedA === trimmedE) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -44,9 +50,13 @@ export function isCorrect(question: Question, answer: string): boolean {
 export function isValid(question: Question, answer: string): boolean {
     if (question.type === "short_answer_question") {
         return true;
+    } else {
+        if (question.options.includes(answer)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-
-    return question.options.includes(answer);
 }
 
 /**
@@ -56,7 +66,8 @@ export function isValid(question: Question, answer: string): boolean {
  * name "My First Question" would become "9: My First Q".
  */
 export function toShortForm(question: Question): string {
-    return `${question.id}: ${question.name.substring(0, 10)}`;
+    const comb = question.id.toString() + ": " + question.name.slice(0, 10);
+    return comb;
 }
 
 /**
@@ -77,16 +88,25 @@ export function toShortForm(question: Question): string {
  * Check the unit tests for more examples of what this looks like!
  */
 export function toMarkdown(question: Question): string {
-    let result = "# " + question.name + "\n";
-    result += question.body + "\n";
-
     if (question.type === "multiple_choice_question") {
-        for (let option of question.options) {
-            result += "- " + option + "\n";
-        }
+        return (
+            "# " +
+            question.name +
+            "\n" +
+            question.body +
+            "\n" +
+            "- " +
+            question.options[0] +
+            "\n" +
+            "- " +
+            question.options[1] +
+            "\n" +
+            "- " +
+            question.options[2]
+        );
+    } else {
+        return "# " + question.name + "\n" + question.body;
     }
-
-    return result.trim();
 }
 
 /**
